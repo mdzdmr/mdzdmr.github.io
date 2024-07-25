@@ -54,9 +54,9 @@ export function BackgroundBeamsDemo() {
                     <span>My name is Zaid and</span>
                 </div>
                 <div className="relative text-lg md:text-7xl font-sans font-bold flex items-center">
-                    <span style={{ color: '#138086' }}>I'm a&nbsp;</span>
+                    <span style={{ color: '#138086' }}>I&apos;m a&nbsp;</span>
                     <div className="inline-block">
-                        <TypewriterEffectSmooth words={words} textColor="#138086" cursorClassName="text-[#138086]" />
+                        <TypewriterEffectSmooth words={words} cursorClassName="text-[#138086]" />
                     </div>
                     <span style={{ color: '#138086' }}>!</span>
                 </div>
