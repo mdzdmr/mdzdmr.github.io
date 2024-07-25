@@ -4,8 +4,8 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
-    basePath: '/mdzdmr.github.io',  // Replace with your repository name
-    assetPrefix: '/mdzdmr.github.io',  // Replace with your repository name
+    basePath: '/mdzdmr',  // Replace with your repository name
+    assetPrefix: '/mdzdmr',  // Replace with your repository name
 };
 
 export default nextConfig;
