@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { BackgroundBeams } from "@/components/ui/aurora-background";
-import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
+import { BackgroundBeams } from "../components/ui/aurora-background";
+import { TypewriterEffectSmooth } from "../components/ui/typewriter-effect";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
