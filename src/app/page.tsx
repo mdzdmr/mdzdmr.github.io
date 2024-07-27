@@ -1,4 +1,4 @@
-import { BackgroundBeamsDemo } from "@/app/test-ui";
+import { BackgroundBeamsDemo } from "test-ui";
 
 export default function Home() {
     return (
