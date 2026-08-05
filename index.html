@@ -8,6 +8,8 @@
   <meta property="og:title" content="Mohammed Zaid Mir — Data Engineer in Training">
   <meta property="og:description" content="CS @ Western University. Pipelines, warehouses, and everything that moves data from raw to ready.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mdzdmr.com">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b1020'/%3E%3Ctext x='32' y='44' font-size='38' text-anchor='middle' fill='%23ffb454'%3E%E2%99%9E%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -531,6 +533,18 @@
     }
     .project-link:hover { text-decoration: underline; color: #a3b6ff; }
 
+    /* for cards without a repo yet: same slot, amber status instead of a link */
+    .project-status {
+      margin-top: 14px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.74rem;
+      color: var(--amber);
+    }
+    .project-status::after {
+      content: "▍";
+      animation: blink 1.1s steps(1) infinite;
+    }
+
     /* ---------- Off the clock ---------- */
     .hobby-grid {
       display: grid;
@@ -576,8 +590,22 @@
     }
     .card:hover .route path { stroke-dashoffset: 0; }
 
-    .etc-tile { font-family: "IBM Plex Mono", monospace; font-size: 1rem; color: var(--text-soft); }
-    .etc-tile::after { content: "▍"; color: var(--amber); animation: blink 1.1s steps(1) infinite; }
+    /* running: a mini track — the runner laps it on hover */
+    .track-wrap { position: relative; width: 120px; height: 60px; }
+    .runner {
+      position: absolute;
+      top: 0; left: 0;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 10px rgba(255, 180, 84, 0.8);
+      offset-path: path('M 15,30 a 45,18 0 1,1 90,0 a 45,18 0 1,1 -90,0');
+      offset-distance: 0%;
+      animation: lap 1.5s linear infinite;
+      animation-play-state: paused;
+    }
+    .card:hover .runner { animation-play-state: running; }
+    @keyframes lap { to { offset-distance: 100%; } }
 
     .hobby-name { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 0.98rem; color: var(--text); }
     .hobby-line { font-size: 0.87rem; color: var(--text-soft); margin-top: 3px; }
@@ -693,7 +721,7 @@
         ♞
       </div>
       <div class="about-text">
-        <p><strong>Hello ! I'm Zaid.</strong> I'm a cs student @ Western University working towards a career in <strong>data engineering.</strong></p>
+        <p><strong>Hello ! I'm Zaid.</strong> I'm a CS student @ Western University working towards a career in <strong>data engineering.</strong></p>
         <p>So far that's taken me through research in deep learning for financial modelling, medical imaging &amp; ML, and now software engineering at Q-PEC. Outside the terminal you'll find me at a chessboard (peak rating 2102), on a bouldering wall, or out on a run.</p>
       </div>
     </div>
@@ -806,19 +834,19 @@
         </div>
         <div class="project-title">mittensOS</div>
         <div class="project-tech">Python · NumPy</div>
-        <p class="project-desc">update — one or two lines on what it does and what you learned.</p>
+        <p class="project-desc">A comprehensive chess engine implementing negamax search with alpha-beta pruning for advanced AI</p>
         <a class="project-link" href="https://github.com/mdzdmr/mittensOS" target="_blank" rel="noopener">view on github ↗</a>
       </div>
 
       <div class="card project-card">
         <div class="project-img">
-          <img src="/src/assets/projects/jobspace.png" alt="jobSpace screenshot" onerror="this.remove()">
+          <img src="/src/assets/jobSpace.png" alt="jobSpace screenshot" onerror="this.remove()">
           ♜
         </div>
         <div class="project-title">jobSpace</div>
         <div class="project-tech">React.js · Python (Flask) · PostgreSQL · Tailwind CSS</div>
-        <p class="project-desc">update — one or two lines on what it does and what you learned.</p>
-        <a class="project-link" href="https://github.com/mdzdmr/jobSpace" target="_blank" rel="noopener">view on github ↗</a>
+        <p class="project-desc">Developing a full-stack gig marketplace connecting university students with local short-term employment opportunities.</p>
+        <span class="project-status">in development</span>
       </div>
 
       <div class="card project-card">
@@ -828,7 +856,7 @@
         </div>
         <div class="project-title">TileVania</div>
         <div class="project-tech">C# · Unity</div>
-        <p class="project-desc">update — one or two lines on what it does and what you learned.</p>
+        <p class="project-desc">TileVania is a 2D platformer game inspired by classic Mario games!</p>
         <a class="project-link" href="https://github.com/mdzdmr/TileVania" target="_blank" rel="noopener">view on github ↗</a>
       </div>
 
@@ -854,7 +882,7 @@
 
   <!-- ===== Off the clock ===== -->
   <section id="offhours" class="reveal">
-    <h2>Off the Clock <span class="mono-tag">// what I do when the pipeline sleeps</span></h2>
+    <h2>Off the Clock <span class="mono-tag">// what I do when the work stops</span></h2>
     <div class="hobby-grid">
       <div class="card">
         <div class="hobby-visual"><div class="board"><span class="knight">♞</span></div></div>
@@ -879,7 +907,20 @@
         <p class="hobby-line">bouldering is always fun</p>
       </div>
       <div class="card">
-        <div class="hobby-visual"><span class="etc-tile">Running</span></div>
+        <div class="hobby-visual">
+          <div class="track-wrap">
+            <svg viewBox="0 0 120 60" width="120" height="60" aria-hidden="true">
+              <!-- outer + inner lane lines -->
+              <ellipse cx="60" cy="30" rx="52" ry="24" fill="none" stroke="rgba(140,160,220,0.4)" stroke-width="1.5"/>
+              <ellipse cx="60" cy="30" rx="38" ry="12" fill="none" stroke="rgba(140,160,220,0.3)" stroke-width="1.5"/>
+              <!-- lane divider the runner follows -->
+              <ellipse cx="60" cy="30" rx="45" ry="18" fill="none" stroke="rgba(91,123,255,0.45)" stroke-width="1.2" stroke-dasharray="4 5"/>
+              <!-- start line -->
+              <line x1="13" y1="26" x2="17" y2="34" stroke="#ffb454" stroke-width="1.6" opacity="0.8"/>
+            </svg>
+            <span class="runner" aria-hidden="true"></span>
+          </div>
+        </div>
         <div class="hobby-name">Running</div>
         <p class="hobby-line">Recently getting more into running !</p>
       </div>
