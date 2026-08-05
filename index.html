@@ -143,7 +143,10 @@
       overflow-x: auto;
       width: min(860px, 93vw);
       margin: 0 auto;
+      /* hide scrollbar but keep scrollability on narrow screens */
+      scrollbar-width: none;
     }
+    .pipeline::-webkit-scrollbar { display: none; }
     .pipeline::before {
       content: "";
       position: absolute;
@@ -168,7 +171,7 @@
 
     .stage {
       flex: 1;
-      min-width: 96px;
+      min-width: 88px;
       display: flex;
       justify-content: center;
       position: relative;
@@ -221,23 +224,15 @@
       border-radius: 18px;
       backdrop-filter: blur(10px);
       margin: 34px auto 60px;
-      padding: clamp(28px, 5vw, 56px);
+      padding: clamp(24px, 5vw, 56px);
     }
 
     /* ---------- Hero (resume header) ---------- */
     .hero { text-align: center; padding-bottom: 30px; border-bottom: 1px solid var(--line); }
 
-    .eyebrow {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.78rem;
-      color: var(--text-soft);
-      margin-bottom: 14px;
-    }
-    .eyebrow .accent { color: var(--cobalt-bright); }
-
     h1 {
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      font-size: clamp(2.1rem, 6vw, 3.4rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.05;
@@ -253,8 +248,6 @@
       font-size: 0.92rem;
       color: var(--text-soft);
     }
-    .rotline .rot { color: var(--cobalt-bright); font-weight: 500; transition: opacity 0.25s ease; }
-    .rotline .rot.swap { opacity: 0; }
     .rotline .caret {
       display: inline-block;
       width: 9px; height: 1.05em;
@@ -279,28 +272,6 @@
     .contact-line a:hover { text-decoration: underline; }
 
     .hero-actions { margin-top: 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.73rem;
-      color: var(--text-soft);
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 7px 14px;
-    }
-    .status .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--amber);
-      box-shadow: 0 0 10px var(--amber);
-      animation: pulse 2.2s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
-    #status-text { transition: opacity 0.3s ease; }
-    #status-text.swap { opacity: 0; }
 
     .btn-resume, .btn-coffee {
       display: inline-flex;
@@ -347,6 +318,7 @@
       display: flex;
       align-items: baseline;
       gap: 10px;
+      flex-wrap: wrap; /* long mono tags wrap cleanly on small screens */
     }
     section h2 .mono-tag {
       font-family: "IBM Plex Mono", monospace;
@@ -356,6 +328,35 @@
       letter-spacing: 0;
       color: var(--cobalt-bright);
     }
+
+    /* ---------- About ---------- */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .about-photo {
+      width: 130px; height: 130px;
+      border-radius: 16px;
+      background: var(--card-solid);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      color: var(--amber);
+    }
+    .about-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .about-text p { color: var(--text-soft); font-size: 0.95rem; }
+    .about-text p + p { margin-top: 10px; }
+    .about-text strong { color: var(--text); font-weight: 600; }
 
     .entry { margin-bottom: 24px; }
     .entry:last-child { margin-bottom: 0; }
@@ -395,7 +396,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      gap: 14px;
+      gap: 4px 14px;
       flex-wrap: wrap;
     }
     .entry-title {
@@ -422,19 +423,14 @@
     ul.bullets li { color: var(--text-soft); font-size: 0.93rem; margin: 5px 0; }
     ul.bullets li::marker { color: var(--cobalt); }
 
-    /* skills rows */
-    .skill-row {
-      display: flex;
-      align-items: baseline;
-      gap: 14px;
-      flex-wrap: wrap;
-      padding: 8px 0;
-    }
+    /* ---------- Skills: label above, chips below — no dangling wrap ---------- */
+    .skill-row { padding: 10px 0; }
     .skill-row .k {
+      display: block;
       font-family: "IBM Plex Mono", monospace;
       font-size: 0.74rem;
       color: var(--text-soft);
-      min-width: 120px;
+      margin-bottom: 8px;
     }
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip {
@@ -446,15 +442,18 @@
       border-radius: 6px;
       padding: 3px 10px;
       transition: transform 0.18s, background 0.18s, color 0.18s;
+      white-space: nowrap;
     }
     .chip:hover { transform: translateY(-2px); background: rgba(91, 123, 255, 0.26); color: #cdd8ff; }
 
-    /* ---------- Off the clock ---------- */
-    .hobby-grid {
+    /* ---------- Project cards: uniform boxes with image + link ---------- */
+    .project-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
       gap: 16px;
+      align-items: stretch;
     }
+
     .card {
       background: var(--card);
       border: 1px solid var(--line);
@@ -477,8 +476,73 @@
     }
     .card:hover::after { opacity: 1; }
 
+    .project-card {
+      display: flex;
+      flex-direction: column;
+    }
+    .project-img {
+      height: 140px;              /* fixed height = every box identical */
+      flex: 0 0 140px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background:
+              radial-gradient(circle at 30% 30%, rgba(91, 123, 255, 0.25), transparent 60%),
+              radial-gradient(circle at 75% 75%, rgba(255, 180, 84, 0.15), transparent 55%),
+              rgba(11, 16, 32, 0.7);
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      font-size: 1.7rem;
+      color: rgba(170, 180, 212, 0.5); /* fallback glyph tint */
+    }
+    .project-img img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;           /* fills the box, never distorts layout */
+    }
+    .project-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+    }
+    .project-tech {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.7rem;
+      color: var(--cobalt-bright);
+      margin: 3px 0 8px;
+    }
+    .project-desc {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      flex: 1 1 auto;              /* pushes the link to the bottom */
+    }
+    .project-link {
+      margin-top: 14px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.74rem;
+      color: var(--cobalt-bright);
+      text-decoration: none;
+      position: relative;
+      z-index: 1;                  /* stays clickable above the spotlight */
+    }
+    .project-link:hover { text-decoration: underline; color: #a3b6ff; }
+
+    /* ---------- Off the clock ---------- */
+    .hobby-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+    .hobby-grid .card { display: flex; flex-direction: column; }
+
     .hobby-visual {
       height: 92px;
+      flex: 0 0 92px;
       border-radius: 10px;
       border: 1px solid var(--line);
       background: rgba(11, 16, 32, 0.6);
@@ -539,6 +603,12 @@
       color: var(--text-soft);
       text-align: center;
     }
+    footer .wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       * { animation: none !important; transition: none !important; }
@@ -547,10 +617,32 @@
       body.intro .topbar, body.intro .sheet { opacity: 1; }
     }
 
-    @media (max-width: 560px) {
+    /* ---------- Small screens ---------- */
+    @media (max-width: 640px) {
+      :root { --bar-h: 64px; }
+
+      /* nav: smaller nodes + labels so all six stages fit better */
+      .pipeline { padding: 14px 0 8px; }
+      .stage { min-width: 72px; }
+      .stage a { gap: 5px; padding: 2px 4px; }
+      .node { width: 22px; height: 22px; font-size: 0.56rem; border-width: 1.5px; }
+      .stage-label { font-size: 0.6rem; }
+      .pipeline::before, .pipeline .fill { top: 25px; }
+
+      /* resume rows: stack title over date instead of fighting for one line */
+      .entry-head, .entry-sub { flex-direction: column; align-items: flex-start; gap: 1px; }
+      .entry-title .tech { display: block; margin: 2px 0 0; }
+
+      /* about: photo above text */
+      .about-grid { grid-template-columns: 1fr; }
+      .about-photo { margin: 0 auto; }
+
       .entry.with-logo { grid-template-columns: 40px 1fr; gap: 12px; }
       .xp-logo { width: 40px; height: 40px; border-radius: 10px; }
-      .skill-row .k { min-width: 100%; }
+
+      .project-img { height: 150px; flex-basis: 150px; }
+
+      section { padding-top: 32px; }
     }
   </style>
 </head>
@@ -565,11 +657,12 @@
 <nav class="topbar" aria-label="Page sections">
   <ul class="pipeline">
     <div class="fill" aria-hidden="true"></div>
-    <li class="stage" data-target="education"><a href="#education"><span class="node">01</span><span class="stage-label">education</span></a></li>
-    <li class="stage" data-target="experience"><a href="#experience"><span class="node">02</span><span class="stage-label">experience</span></a></li>
-    <li class="stage" data-target="projects"><a href="#projects"><span class="node">03</span><span class="stage-label">projects</span></a></li>
-    <li class="stage" data-target="skills"><a href="#skills"><span class="node">04</span><span class="stage-label">skills</span></a></li>
-    <li class="stage" data-target="offhours"><a href="#offhours"><span class="node">05</span><span class="stage-label">off_hours</span></a></li>
+    <li class="stage" data-target="about"><a href="#about"><span class="node">01</span><span class="stage-label">about</span></a></li>
+    <li class="stage" data-target="education"><a href="#education"><span class="node">02</span><span class="stage-label">education</span></a></li>
+    <li class="stage" data-target="experience"><a href="#experience"><span class="node">03</span><span class="stage-label">experience</span></a></li>
+    <li class="stage" data-target="projects"><a href="#projects"><span class="node">04</span><span class="stage-label">projects</span></a></li>
+    <li class="stage" data-target="skills"><a href="#skills"><span class="node">05</span><span class="stage-label">skills</span></a></li>
+    <li class="stage" data-target="offhours"><a href="#offhours"><span class="node">06</span><span class="stage-label">off_hours</span></a></li>
   </ul>
 </nav>
 
@@ -578,7 +671,7 @@
   <!-- ===== Resume header ===== -->
   <div class="hero">
     <h1>Mohammed Zaid Mir</h1>
-    <p class="rotline">→ I build <span class="rot" id="rot">data pipelines</span><span class="caret" aria-hidden="true"></span></p>
+    <p class="rotline">→ I build stuff <span class="caret" aria-hidden="true"></span></p>
     <div class="contact-line">
       <a href="mailto:mmir28@uwo.ca">mmir28@uwo.ca</a> ·
       <a href="https://www.linkedin.com/in/mohammed-zaid-mir/" target="_blank" rel="noopener">linkedin</a> ·
@@ -586,11 +679,25 @@
       <span>london, on</span>
     </div>
     <div class="hero-actions">
-
-      <a class="btn-resume" href="resume.pdf" download>↓ download résumé</a>
-      <a class="btn-coffee" href="https://buymeacoffee.com/yourusername" target="_blank" rel="noopener">☕ buy me a coffee</a>
+      <a class="btn-resume" href="/src/assets/MohammedZaidMir_Resume.pdf" download>↓ download résumé</a>
     </div>
   </div>
+
+  <!-- ===== About ===== -->
+  <section id="about" class="reveal">
+    <h2>About <span class="mono-tag">// SELECT * FROM me</span></h2>
+    <div class="about-grid">
+      <div class="about-photo">
+        <!-- drop your photo at this path; if it's missing, the knight shows instead -->
+        <img src="/src/assets/me.JPEG" alt="Mohammed Zaid Mir" onerror="this.remove()">
+        ♞
+      </div>
+      <div class="about-text">
+        <p><strong>Hello ! I'm Zaid.</strong> I'm a cs student @ Western University working towards a career in <strong>data engineering.</strong></p>
+        <p>So far that's taken me through research in deep learning for financial modelling, medical imaging &amp; ML, and now software engineering at Q-PEC. Outside the terminal you'll find me at a chessboard (peak rating 2102), on a bouldering wall, or out on a run.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== Education ===== -->
   <section id="education" class="reveal">
@@ -606,7 +713,7 @@
       </div>
       <ul class="bullets">
         <li>Relevant coursework: Computer Architecture, Machine Learning, Data Structures & Algorithms, Operating Systems, Discrete
-          Mathematics, Statistics, Quantum Computing, Linear Algebra, Game Theory, Complex Analysis, Parallel Programming</li>
+          Mathematics, Statistics, Quantum Computing, Linear Algebra, Parallel Programming</li>
       </ul>
     </div>
   </section>
@@ -629,9 +736,6 @@
           <span class="entry-org">Q-PEC (Qatar - Power Engineering &amp; Contracting)</span>
           <span class="entry-loc">london, on</span>
         </div>
-        <ul class="bullets">
-          <li>Software Engineering @ q-pec</li>
-        </ul>
       </div>
     </div>
 
@@ -649,9 +753,6 @@
           <span class="entry-org">Robarts Research Institute</span>
           <span class="entry-loc">london, on</span>
         </div>
-        <ul class="bullets">
-          <li>Medical Imaging and ML. Supervised research under Dr. Ian Cunningham.</li>
-        </ul>
       </div>
     </div>
 
@@ -669,46 +770,68 @@
           <span class="entry-org">Canada's Financial Wellness Lab</span>
           <span class="entry-loc">london, on</span>
         </div>
-        <ul class="bullets">
-          <li>Deep Learning & Financial Modelling @ The Banking Analytics Lab. Supervised research under Dr. Cristian Bravo Roman and Ph.D. student Sanghyun Jung</li>
-        </ul>
       </div>
     </div>
+
+    <div class="entry with-logo">
+      <div class="xp-logo">
+        <img src="/src/assets/uwo.png" alt="University of Western Ontario logo" onerror="this.remove()">
+        W
+      </div>
+      <div>
+        <div class="entry-head">
+          <span class="entry-title">Undergraduate Student Researcher</span>
+          <span class="entry-date">jan 2023 — jun 2023</span>
+        </div>
+        <div class="entry-sub">
+          <span class="entry-org">University of Western Ontario</span>
+          <span class="entry-loc">london, on</span>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <!-- ===== Projects ===== -->
   <section id="projects" class="reveal">
     <h2>Projects <span class="mono-tag">// load — climbers call them projects too</span></h2>
 
-    <div class="entry">
-      <div class="entry-head">
-        <span class="entry-title">Weather Data Pipeline <span class="tech">| python, postgresql, cron</span></span>
-        <span class="entry-date">2025</span>
-      </div>
-      <ul class="bullets">
-        <li>Built an ETL pipeline pulling hourly weather data from a public API, normalized with Pandas, loaded into PostgreSQL on a schedule.</li>
-        <li>Placeholder — add a metric (rows/day processed, uptime) and a GitHub link.</li>
-      </ul>
-    </div>
+    <div class="project-grid">
 
-    <div class="entry">
-      <div class="entry-head">
-        <span class="entry-title">Campus Course Analytics <span class="tech">| python, sql, plotly</span></span>
-        <span class="entry-date">2024</span>
+      <div class="card project-card">
+        <div class="project-img">
+          <!-- image fills the box; if missing, the gradient + glyph placeholder shows -->
+          <img src="/src/assets/mittens.webp" alt="mittensOS screenshot" onerror="this.remove()">
+          ♟
+        </div>
+        <div class="project-title">mittensOS</div>
+        <div class="project-tech">Python · NumPy</div>
+        <p class="project-desc">update — one or two lines on what it does and what you learned.</p>
+        <a class="project-link" href="https://github.com/mdzdmr/mittensOS" target="_blank" rel="noopener">view on github ↗</a>
       </div>
-      <ul class="bullets">
-        <li>Scraped and structured public course data into a queryable dataset with a dashboard exploring enrollment patterns.</li>
-      </ul>
-    </div>
 
-    <div class="entry">
-      <div class="entry-head">
-        <span class="entry-title">Your Next Project <span class="tech">| tbd</span></span>
-        <span class="entry-date">soon</span>
+      <div class="card project-card">
+        <div class="project-img">
+          <img src="/src/assets/projects/jobspace.png" alt="jobSpace screenshot" onerror="this.remove()">
+          ♜
+        </div>
+        <div class="project-title">jobSpace</div>
+        <div class="project-tech">React.js · Python (Flask) · PostgreSQL · Tailwind CSS</div>
+        <p class="project-desc">update — one or two lines on what it does and what you learned.</p>
+        <a class="project-link" href="https://github.com/mdzdmr/jobSpace" target="_blank" rel="noopener">view on github ↗</a>
       </div>
-      <ul class="bullets">
-        <li>Placeholder — what it does, what it's built with, what you learned. Numbers beat adjectives.</li>
-      </ul>
+
+      <div class="card project-card">
+        <div class="project-img">
+          <img src="/src/assets/tilevania.png" alt="TileVania screenshot" onerror="this.remove()">
+          ♞
+        </div>
+        <div class="project-title">TileVania</div>
+        <div class="project-tech">C# · Unity</div>
+        <p class="project-desc">update — one or two lines on what it does and what you learned.</p>
+        <a class="project-link" href="https://github.com/mdzdmr/TileVania" target="_blank" rel="noopener">view on github ↗</a>
+      </div>
+
     </div>
   </section>
 
@@ -720,9 +843,12 @@
       <div class="chips"><span class="chip">Python</span><span class="chip">Java</span><span class="chip">C/C++</span><span class="chip">C#</span><span class="chip">PostgreSQL/MySQL</span></div>
     </div>
     <div class="skill-row">
-      <span class="k">tools & frameworks</span>
-      <div class="chips"><span class="chip">Git</span><span class="chip">Unix/Linux</span><span class="chip">LaTeX</span><span class="chip">NumPy</span><span class="chip">Pandas</span><span class="chip">Matplotlib</span><span class="chip">Seaborn</span>
-        <span class="chip">PyTorch</span><span class="chip">React</span><span class="chip">Node.js</span></div>
+      <span class="k">data &amp; ml</span>
+      <div class="chips"><span class="chip">NumPy</span><span class="chip">Pandas</span><span class="chip">Matplotlib</span><span class="chip">Seaborn</span><span class="chip">PyTorch</span></div>
+    </div>
+    <div class="skill-row">
+      <span class="k">tools &amp; web</span>
+      <div class="chips"><span class="chip">Git</span><span class="chip">Unix/Linux</span><span class="chip">LaTeX</span><span class="chip">React</span><span class="chip">Node.js</span></div>
     </div>
   </section>
 
@@ -733,7 +859,7 @@
       <div class="card">
         <div class="hobby-visual"><div class="board"><span class="knight">♞</span></div></div>
         <div class="hobby-name">Chess</div>
-        <p class="hobby-line">Always thinking a few moves ahead — on the board and in the schema.</p>
+        <p class="hobby-line">Love playing chess until it hurts the head. Canadian University Chess Championship Candidate (Peak Elo/Rating: 2102)</p>
       </div>
       <div class="card">
         <div class="hobby-visual">
@@ -750,12 +876,12 @@
           </svg>
         </div>
         <div class="hobby-name">Climbing</div>
-        <p class="hobby-line">Route-finding, problem-solving, and knowing when to commit to a move.</p>
+        <p class="hobby-line">bouldering is always fun</p>
       </div>
       <div class="card">
-        <div class="hobby-visual"><span class="etc-tile">et_cetera</span></div>
-        <div class="hobby-name">And more</div>
-        <p class="hobby-line">Placeholder — duplicate a card for your other hobbies and swap the visual.</p>
+        <div class="hobby-visual"><span class="etc-tile">Running</span></div>
+        <div class="hobby-name">Running</div>
+        <p class="hobby-line">Recently getting more into running !</p>
       </div>
     </div>
   </section>
@@ -763,7 +889,10 @@
 </main>
 
 <footer>
-  <div class="wrap">© 2026 Mohammed Zaid Mir · built between chess games and climbing sessions · one commit at a time</div>
+  <div class="wrap">
+    <span>© 2026 Mohammed Zaid Mir · built between chess games and climbing sessions</span>
+    <a class="btn-coffee" href="https://buymeacoffee.com/mdzdmr" target="_blank" rel="noopener">☕ buy me a coffee</a>
+  </div>
 </footer>
 
 <script>
@@ -948,21 +1077,6 @@
     document.querySelectorAll(".reveal").forEach(el => io.observe(el));
   } else {
     document.querySelectorAll(".reveal").forEach(el => el.classList.add("in"));
-  }
-
-  /* ---------- Rotating role words ---------- */
-  const rot = document.getElementById("rot");
-  const rotWords = ["data pipelines", "SQL models", "ETL jobs", "dashboards", "clean datasets", "opening reps", "route beta"];
-  if (rot && !reduceMotion) {
-    let ri = 0;
-    setInterval(() => {
-      rot.classList.add("swap");
-      setTimeout(() => {
-        ri = (ri + 1) % rotWords.length;
-        rot.textContent = rotWords[ri];
-        rot.classList.remove("swap");
-      }, 260);
-    }, 2600);
   }
 
   /* ---------- Card spotlight ---------- */
