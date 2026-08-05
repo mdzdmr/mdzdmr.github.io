@@ -39,16 +39,26 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
+    /* lock scrolling while the intro plays */
+    body.intro { overflow: hidden; }
 
     /* ---------- Full-screen chess-tile intro ---------- */
     #intro {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      /* 100lvh = large viewport: covers the area behind mobile URL bars.
+         Plain 100vh is the fallback for older browsers. */
+      height: 100vh;
+      height: 100lvh;
       z-index: 60;
       perspective: 1100px;
       display: grid;
       cursor: pointer;
       transition: opacity 0.4s ease;
+      overflow: hidden;
+      background: var(--bg); /* no gaps show through while tiles animate */
     }
     #intro.out { opacity: 0; pointer-events: none; }
 
@@ -56,6 +66,7 @@
       position: relative;
       backface-visibility: hidden;
       transform-style: preserve-3d;
+      will-change: transform, opacity;
       display: grid;
       place-items: center;
       opacity: 0;
@@ -363,12 +374,22 @@
       display: grid;
       place-items: center;
       overflow: hidden;
+      position: relative;
       font-family: "Space Grotesk", sans-serif;
       font-weight: 700;
       font-size: 0.95rem;
       color: var(--cobalt-bright);
     }
-    .xp-logo img { width: 100%; height: 100%; object-fit: contain; padding: 7px; background: #fff; }
+    /* the image sits on top of the initials; if it fails to load,
+       onerror removes it and the initials show instead */
+    .xp-logo img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      padding: 7px;
+      background: #fff;
+    }
 
     .entry-head, .entry-sub {
       display: flex;
@@ -580,7 +601,7 @@
         <span class="entry-date">sep 2022 — apr 2027 (expected)</span>
       </div>
       <div class="entry-sub">
-        <span class="entry-org">B.Sc. (Specialization) in Computer Science — Minor in Software Engineeringe</span>
+        <span class="entry-org">B.Sc. (Specialization) in Computer Science — Minor in Software Engineering</span>
         <span class="entry-loc">london, on</span>
       </div>
       <ul class="bullets">
@@ -595,25 +616,30 @@
     <h2>Experience <span class="mono-tag">// stage</span></h2>
 
     <div class="entry with-logo">
-      <!-- Replace initials with: <img src="logos/company.png" alt="Company logo"> -->
-      <div class="xp-logo">Co</div>
+      <div class="xp-logo">
+        <img src="/src/assets/qpec.png" alt="Q-PEC logo" onerror="this.remove()">
+        Q
+      </div>
       <div>
         <div class="entry-head">
           <span class="entry-title">Software Engineering Intern</span>
           <span class="entry-date">sep 2025 — aug 2026</span>
         </div>
         <div class="entry-sub">
-          <span class="entry-org">Q-PEC (Qatar - Power Engineering & Contracting</span>
+          <span class="entry-org">Q-PEC (Qatar - Power Engineering &amp; Contracting)</span>
           <span class="entry-loc">london, on</span>
         </div>
         <ul class="bullets">
-          <p>Software Engineering @ q-pec</p>
+          <li>Software Engineering @ q-pec</li>
         </ul>
       </div>
     </div>
 
     <div class="entry with-logo">
-      <div class="xp-logo">W</div>
+      <div class="xp-logo">
+        <img src="/src/assets/robarts.png" alt="Robarts Research Institute logo" onerror="this.remove()">
+        R
+      </div>
       <div>
         <div class="entry-head">
           <span class="entry-title">Software Engineer Intern</span>
@@ -624,13 +650,16 @@
           <span class="entry-loc">london, on</span>
         </div>
         <ul class="bullets">
-          <p>Medical Imaging and ML. Supervised research under Dr. Ian Cunningham.</p>
+          <li>Medical Imaging and ML. Supervised research under Dr. Ian Cunningham.</li>
         </ul>
       </div>
     </div>
 
     <div class="entry with-logo">
-      <div class="xp-logo">Co</div>
+      <div class="xp-logo">
+        <img src="/src/assets/cfw.webp" alt="Canada's Financial Wellness Lab logo" onerror="this.remove()">
+        F
+      </div>
       <div>
         <div class="entry-head">
           <span class="entry-title">Data Engineer Intern</span>
@@ -641,7 +670,7 @@
           <span class="entry-loc">london, on</span>
         </div>
         <ul class="bullets">
-          <p>Deep Learning & Financial Modelling @ The Banking Analytics Lab. Supervised research under Dr. Cristian Bravo Roman and Ph.D. student Sanghyun Jung</p>
+          <li>Deep Learning & Financial Modelling @ The Banking Analytics Lab. Supervised research under Dr. Cristian Bravo Roman and Ph.D. student Sanghyun Jung</li>
         </ul>
       </div>
     </div>
@@ -757,12 +786,21 @@
   } else {
     document.body.classList.add("intro");
 
-    const w = window.innerWidth, h = window.innerHeight;
-    const size = Math.max(56, Math.min(w, h) / 9);
+    const w = Math.max(window.innerWidth, document.documentElement.clientWidth || 0);
+    const h = Math.max(window.innerHeight, document.documentElement.clientHeight || 0);
+    const isMobile = w < 640;
+
+    // larger tiles on phones = fewer animated elements = smoother
+    const size = isMobile ? Math.max(48, w / 6) : Math.max(56, Math.min(w, h) / 9);
     const cols = Math.ceil(w / size);
-    const rows = Math.ceil(h / size);
+    // overscan rows so the grid still covers the screen when the
+    // mobile URL bar collapses and the viewport grows taller
+    const rows = Math.ceil((h * (isMobile ? 1.18 : 1)) / size);
     intro.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    intro.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    intro.style.gridTemplateRows = `repeat(${rows}, ${size}px)`;
+
+    // flatter perspective on phones so edge tiles don't warp
+    intro.style.perspective = isMobile ? "1800px" : "1100px";
 
     // flip-out wave radiates from a random origin tile
     const oc = Math.floor(Math.random() * cols);
@@ -773,8 +811,17 @@
     const OUT_START = 850;   // ms before flip-out begins
     let lastOut = 0;
 
-    // a mixed bag of entrances and exits — every tile draws its own
-    const flipsIn = [
+    // a mixed bag of entrances and exits — every tile draws its own.
+    // phones get a tamer pool: no translateZ moves (they warp hard at
+    // screen edges under perspective) and gentler rotations.
+    const flipsIn = isMobile ? [
+      "rotateX(-90deg)",
+      "rotateX(90deg)",
+      "rotateY(-90deg)",
+      "rotateY(90deg)",
+      "scale(0.1) rotate(45deg)",
+      "translateY(-30px) rotateX(-60deg)"
+    ] : [
       "rotateX(-90deg)",
       "rotateX(90deg)",
       "rotateY(-90deg)",
@@ -785,7 +832,14 @@
       "translateY(-46px) rotateX(-75deg)",
       "translateZ(-260px)"
     ];
-    const flipsOut = [
+    const flipsOut = isMobile ? [
+      "rotateY(95deg) scale(0.85)",
+      "rotateY(-95deg) scale(0.85)",
+      "rotateX(95deg) scale(0.85)",
+      "rotateX(-95deg) scale(0.85)",
+      "scale(0) rotate(-70deg)",
+      "translateY(36px) rotateX(70deg)"
+    ] : [
       "rotateY(100deg) scale(0.8)",
       "rotateY(-100deg) scale(0.8)",
       "rotateX(100deg) scale(0.8)",
@@ -796,7 +850,9 @@
       "translateZ(-320px) rotateY(50deg)",
       "translateY(52px) rotateX(85deg)"
     ];
-    const origins = ["center", "top", "bottom", "left", "right", "top left", "bottom right"];
+    const origins = isMobile
+            ? ["center", "top", "bottom"]
+            : ["center", "top", "bottom", "left", "right", "top left", "bottom right"];
     const easings = [
       "ease",
       "ease-in-out",
